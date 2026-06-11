@@ -48,29 +48,9 @@ function Home() {
     setError("");
     localStorage.setItem("coderoomUsername", trimmedUsername);
 
-    // Tell the backend this user joined before navigating into the room.
-    fetch("http://localhost:3000/join", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ roomId: trimmedRoomId }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Room not found");
-        }
-
-        return res.json();
-      })
-      .then(() => {
-        navigate(`/room/${trimmedRoomId}`, {
-          state: { username: trimmedUsername },
-        });
-      })
-      .catch(() => {
-        setError("Room not found. Please check the room ID.");
-      });
+    navigate(`/room/${trimmedRoomId}`, {
+      state: { username: trimmedUsername },
+    });
   };
 
   return (
@@ -84,7 +64,7 @@ function Home() {
             type="text"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
-            placeholder="Akanksha"
+            placeholder="Enter your name"
           />
         </label>
 
