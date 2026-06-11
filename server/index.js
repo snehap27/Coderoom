@@ -67,11 +67,21 @@ io.on("connection", (socket) => {
     };
 
     const room = rooms[data.roomId];
-    
+
+    if (!room) {
+      console.error("Room not found");
+      return;
+    }
+
+    socket.join(data.roomId); // join the Socket.IO room with the specified roomId
+
     room.users.push({
       username: data.username,
       socketId: socket.id,
     });
+
+    // broadcast the updated user list to all clients in the room
+    io.to(data.roomId).emit("room-users", room.users);
 
     console.log(room);
     console.log(socketToUser);
@@ -92,6 +102,9 @@ io.on("connection", (socket) => {
       if (index !== -1){
         room.users.splice(index, 1);
       }
+
+      // broadcast the updated user list to all clients in the room after a user disconnects
+      io.to(user.roomId).emit("room-users", room.users);
 
       console.log("Updated room:", room);
     }
