@@ -1,23 +1,43 @@
+const http = require("http");
+const { Server } = require("socket.io");
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const server = http.createServer(app); // create an HTTP server using the Express app, this allows us to use the same server for both HTTP requests and WebSocket connections in the future if needed
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // allow requests from the frontend development server
+  },
+}); // create a Socket.IO server instance linked to the HTTP server
 
 // frontend runs on 5173, backend runs on 3000
 // cors is needed to allow the frontend to make requests to the backend
 app.use(cors());
 app.use(express.json());
 
-const createRoom = () => ({
-  roomId: Math.random().toString(36).substring(2, 8),
-  users: 1,
-});
-
-// In-memory room data. This will reset every time the server restarts.
+// in-memory room data store; in a real application this would be stored in a database
 const rooms = {};
+const socketToUser = {};
 
-app.get("/room", (req, res) => {
-  res.json(Object.values(rooms));
+const createRoom = () => {
+  let id;
+
+  do {
+    id = Math.random().toString(36).substring(2, 8);
+  } while (rooms[id]);
+
+  rooms[id] = {
+    roomId: id,
+    users: [],
+  };
+
+  return rooms[id];
+};
+
+app.post("/room", (req, res) => {
+  const room = createRoom();
+  res.status(201).json({ room });
 });
 
 app.get("/room/:roomId", (req, res) => {
@@ -25,46 +45,61 @@ app.get("/room/:roomId", (req, res) => {
   const room = rooms[roomId];
 
   if (!room) {
-    return res.status(404).json({
-      message: "Room not found",
-    });
+    return res.status(404).json({ error: "Room not found" });
   }
 
   res.json(room);
 });
 
-app.post("/room", (req, res) => {
-  const room = createRoom();
-  rooms[room.roomId] = room;
-
-  res.json({
-    message: "Room created",
-    room,
-  });
-});
-
-app.post("/join", (req, res) => {
-  const { roomId } = req.body;
-  const room = rooms[roomId];
-
-  // Only existing rooms can be joined.
-  if (!room) {
-    return res.status(404).json({
-      message: "Room not found",
-    });
-  }
-
-  // This is a temporary count until Socket.io presence is added.
-  room.users += 1;
-
-  res.json({
-    message: "User joined room",
-    room,
-  });
-});
-
 const PORT = 3000;
 
-app.listen(PORT, () => {
+// run this function whenever a new client connects
+io.on("connection", (socket) => {
+  console.log("User connected");
+
+  // listen for "join-room" events from the client and log the data to the console
+  socket.on("join-room", (data) => {
+    console.log("join-room received"); // console prints "User joined room:" followed by the data sent from the client when a user joins a room
+    console.log(data);
+    socketToUser[socket.id] = {
+      username: data.username,
+      roomId: data.roomId,
+    };
+
+    const room = rooms[data.roomId];
+    
+    room.users.push({
+      username: data.username,
+      socketId: socket.id,
+    });
+
+    console.log(room);
+    console.log(socketToUser);
+  });
+
+  socket.on("disconnect", () => {
+    const user = socketToUser[socket.id];
+
+    if (!user) return;
+
+    const room = rooms[user.roomId];
+
+    if (room) {
+      const index = room.users.findIndex(
+        (u) => u.socketId === socket.id
+      );
+
+      if (index !== -1){
+        room.users.splice(index, 1);
+      }
+
+      console.log("Updated room:", room);
+    }
+    delete socketToUser[socket.id];
+    console.log("Current socket registry:", socketToUser);
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
