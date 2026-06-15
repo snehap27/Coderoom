@@ -4,19 +4,20 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const server = http.createServer(app); // create an HTTP server using the Express app, this allows us to use the same server for both HTTP requests and WebSocket connections in the future if needed
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // allow requests from the frontend development server
+    origin: "http://localhost:5173",
   },
-}); // create a Socket.IO server instance linked to the HTTP server
+});
 
-// frontend runs on 5173, backend runs on 3000
-// cors is needed to allow the frontend to make requests to the backend
 app.use(cors());
 app.use(express.json());
 
-// in-memory room data store; in a real application this would be stored in a database
+const DEFAULT_CODE = `function hello() {
+  console.log("Welcome to CodeRoom");
+}`;
+
 const rooms = {};
 const socketToUser = {};
 
@@ -30,6 +31,7 @@ const createRoom = () => {
   rooms[id] = {
     roomId: id,
     users: [],
+    code: DEFAULT_CODE,
   };
 
   return rooms[id];
@@ -53,14 +55,13 @@ app.get("/room/:roomId", (req, res) => {
 
 const PORT = 3000;
 
-// run this function whenever a new client connects
 io.on("connection", (socket) => {
   console.log("User connected");
 
-  // listen for "join-room" events from the client and log the data to the console
   socket.on("join-room", (data) => {
-    console.log("join-room received"); // console prints "User joined room:" followed by the data sent from the client when a user joins a room
+    console.log("join-room received");
     console.log(data);
+
     socketToUser[socket.id] = {
       username: data.username,
       roomId: data.roomId,
@@ -73,18 +74,30 @@ io.on("connection", (socket) => {
       return;
     }
 
-    socket.join(data.roomId); // join the Socket.IO room with the specified roomId
+    socket.join(data.roomId);
 
-    room.users.push({
-      username: data.username,
-      socketId: socket.id,
-    });
+    const existingUser = room.users.find((user) => user.socketId === socket.id);
 
-    // broadcast the updated user list to all clients in the room
+    if (!existingUser) {
+      room.users.push({
+        username: data.username,
+        socketId: socket.id,
+      });
+    }
+
     io.to(data.roomId).emit("room-users", room.users);
+    socket.emit("code-update", room.code);
+  });
 
-    console.log(room);
-    console.log(socketToUser);
+  socket.on("code-change", (data) => {
+    const room = rooms[data.roomId];
+
+    if (!room) {
+      return;
+    }
+
+    room.code = data.code;
+    socket.to(data.roomId).emit("code-update", room.code);
   });
 
   socket.on("disconnect", () => {
@@ -95,19 +108,16 @@ io.on("connection", (socket) => {
     const room = rooms[user.roomId];
 
     if (room) {
-      const index = room.users.findIndex(
-        (u) => u.socketId === socket.id
-      );
+      const index = room.users.findIndex((u) => u.socketId === socket.id);
 
-      if (index !== -1){
+      if (index !== -1) {
         room.users.splice(index, 1);
       }
 
-      // broadcast the updated user list to all clients in the room after a user disconnects
       io.to(user.roomId).emit("room-users", room.users);
-
       console.log("Updated room:", room);
     }
+
     delete socketToUser[socket.id];
     console.log("Current socket registry:", socketToUser);
   });

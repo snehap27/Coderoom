@@ -1,49 +1,67 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import Editor from "@monaco-editor/react";
 import { io } from "socket.io-client";
+
+const DEFAULT_CODE = `function hello() {
+  console.log("Welcome to CodeRoom");
+}`;
 
 function Room() {
   const { roomId } = useParams();
   const location = useLocation();
   const socketRef = useRef(null);
-  const username =  // Get the username from location state, localStorage, or default to "Guest"
-    location.state?.username || 
-    localStorage.getItem("coderoomUsername") || 
+  const codeRef = useRef(DEFAULT_CODE);
+  const username =
+    location.state?.username ||
+    localStorage.getItem("coderoomUsername") ||
     "Guest";
   const [room, setRoom] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [users, setUsers] = useState([]);
-
-  /*
-    This useEffect hook establishes a WebSocket connection to the server using Socket.IO when the component mounts.
-    It emits a "join-room" event to the server with the username and roomId, allowing the server to track which users are in which rooms. 
-    The connection is cleaned up when the component unmounts to prevent memory leaks.
-  */
-  useEffect(() => {
-  socketRef.current = io("http://localhost:3000");
-
-  socketRef.current.on("connect", () => {
-    console.log("Connected to server");
-
-    socketRef.current.emit("join-room", {
-      username,
-      roomId,
-    });
-  });
-
-  // Listen for "room-users" events from the server to update the list of users in the room in real-time.
-  socketRef.current.on("room-users", (users) => {
-    setUsers(users);
-  });
-
-  return () => {
-    socketRef.current?.disconnect();
-  };
-}, [roomId, username]);
+  const [code, setCode] = useState(DEFAULT_CODE);
 
   useEffect(() => {
-    // Validate the room on page load and after refreshes.
+    const socket = io("http://localhost:3000");
+    socketRef.current = socket;
+
+    const handleConnect = () => {
+      console.log("Connected to server");
+      socket.emit("join-room", {
+        username,
+        roomId,
+      });
+    };
+
+    const handleRoomUsers = (nextUsers) => {
+      setUsers(nextUsers);
+    };
+
+    const handleCodeUpdate = (nextCode) => {
+      if (nextCode !== codeRef.current) {
+        codeRef.current = nextCode;
+        setCode(nextCode);
+      }
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("room-users", handleRoomUsers);
+    socket.on("code-update", handleCodeUpdate);
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("room-users", handleRoomUsers);
+      socket.off("code-update", handleCodeUpdate);
+      socket.disconnect();
+    };
+  }, [roomId, username]);
+
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
+
+  useEffect(() => {
     fetch(`http://localhost:3000/room/${roomId}`)
       .then((res) => {
         if (!res.ok) {
@@ -64,6 +82,19 @@ function Room() {
         setIsLoading(false);
       });
   }, [roomId]);
+
+  const handleCodeChange = (value) => {
+    const nextCode = value ?? "";
+    codeRef.current = nextCode;
+    setCode(nextCode);
+
+    if (socketRef.current?.connected) {
+      socketRef.current.emit("code-change", {
+        roomId,
+        code: nextCode,
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -89,22 +120,25 @@ function Room() {
         <p>Users: {users.length}</p>
       </section>
 
-      {/* 
-        The following sections are placeholders for the active users list, code editor area, and output area.
-        The active users list will display the usernames of all users currently in the room, which is updated in real-time using Socket.IO events.
-       */}
       <section className="placeholder-panel">
         <h2>Active Users</h2>
         <ul>
-          {users.map((u) => ( // Render each user's username in the list of active users. Each list item has a unique key based on the user's socket ID to help React efficiently update the list when users join or leave the room.
-            <li key={u.socketId}>{u.username}</li> // this line of code renders a list item for each user in the users array, displaying their username. The key prop is set to the user's socketId to ensure that each list item has a unique identifier, which helps React optimize rendering when the list changes.
+          {users.map((u) => (
+            <li key={u.socketId}>{u.username}</li>
           ))}
         </ul>
       </section>
 
       <section className="placeholder-panel">
         <h2>Editor Area</h2>
-        <p>coming soon</p>
+        <Editor
+          height="500px"
+          defaultLanguage="javascript"
+          theme="vs-dark"
+          value={code}
+          onChange={handleCodeChange}
+          options={{ minimap: { enabled: false } }}
+        />
       </section>
 
       <section className="placeholder-panel">
