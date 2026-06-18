@@ -32,6 +32,7 @@ const createRoom = () => {
     roomId: id,
     users: [],
     code: DEFAULT_CODE,
+    whiteboard: [],
   };
 
   return rooms[id];
@@ -55,6 +56,7 @@ app.get("/room/:roomId", (req, res) => {
 
 const PORT = 3000;
 
+// Socket.IO connection handling
 io.on("connection", (socket) => {
   console.log("User connected");
 
@@ -85,10 +87,13 @@ io.on("connection", (socket) => {
       });
     }
 
+    // Emit the updated list of users and the current code to all clients in the room
     io.to(data.roomId).emit("room-users", room.users);
     socket.emit("code-update", room.code);
+    socket.emit("whiteboard-history", room.whiteboard);
   });
 
+  // Handle code change events
   socket.on("code-change", (data) => {
     const room = rooms[data.roomId];
 
@@ -100,6 +105,23 @@ io.on("connection", (socket) => {
     socket.to(data.roomId).emit("code-update", room.code);
   });
 
+  socket.on("whiteboard-draw", (data) => {
+    const room = rooms[data.roomId];
+    if (!room) return;
+
+    room.whiteboard.push(data.stroke);
+    socket.to(data.roomId).emit("whiteboard-data", data.stroke);
+  });
+
+  // Handle cursor movement events
+  socket.on("cursor-move", ({ roomId, userId, position }) => {
+    socket.to(roomId).emit("cursor-update", { 
+      userId, 
+      position 
+    });
+  })
+
+  // Handle user disconnection
   socket.on("disconnect", () => {
     const user = socketToUser[socket.id];
 

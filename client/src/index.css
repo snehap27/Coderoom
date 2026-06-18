@@ -10,7 +10,7 @@ body {
 }
 
 .page {
-  max-width: 640px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 48px 24px;
 }
@@ -64,6 +64,34 @@ button {
   padding: 16px;
 }
 
+.editor-whiteboard {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.editor-container {
+  width: 400px;
+  height: 400px;
+  flex-shrink: 0;
+}
+
+.whiteboard {
+  width: 400px;
+  height: 400px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  flex-shrink: 0;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
+
 .error {
   color: #b91c1c;
+}
+
+.remote-cursor {
+  border-left: 2px solid red;
+  height: 20px;
 }
