@@ -59,6 +59,11 @@ function Room() {
   });
   const [code, setCode] = useState(DEFAULT_CODE); 
   const [language, setLanguage] = useState("javascript");
+  const [brushColor, setBrushColor] = useState("black");
+  const [brushSize, setBrushSize] = useState(2);
+  useEffect(() => {
+  console.log("Brush color:", brushColor);
+}, [brushColor]);
   useEffect(() => {
     localStorage.setItem(
       "theme",
@@ -202,8 +207,6 @@ function Room() {
       const context = canvas.getContext("2d");
       context.lineCap = "round";
       context.lineJoin = "round";
-      context.strokeStyle = "black";
-      context.lineWidth = 2;
       context.fillStyle = "white";
       context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -225,20 +228,42 @@ function Room() {
     };
   };
 
-  const drawStroke = ({ startX, startY, endX, endY }) => {
-    const context = contextRef.current;
-    if (!context) {
-      pendingStrokesRef.current.push({ startX, startY, endX, endY });
-      return;
-    }
+const drawStroke = ({
+  startX,
+  startY,
+  endX,
+  endY,
+  color,
+  size,
+}) => {
 
-    context.beginPath();
-    context.moveTo(startX, startY);
-    context.lineTo(endX, endY);
-    context.strokeStyle = "blue";  // Blue for visibility testing
-    context.stroke();
-    context.closePath();
-  };
+  console.log("Drawing with:", color, size);
+
+  const context = contextRef.current;
+
+  if (!context) {
+    pendingStrokesRef.current.push({
+      startX,
+      startY,
+      endX,
+      endY,
+      color,
+      size,
+    });
+    return;
+  }
+
+  context.beginPath();
+  context.moveTo(startX, startY);
+  context.lineTo(endX, endY);
+
+  context.strokeStyle = color;
+  context.lineWidth = size;
+  context.lineCap = "round";
+
+  context.stroke();
+  context.closePath();
+};
 
   const handleCodeChange = (value) => {
     const nextCode = value ?? "";
@@ -260,59 +285,59 @@ function Room() {
     isDrawingRef.current = false;
   };
 
-  useEffect(() => {
-    const setupListeners = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) {
-        console.log("Canvas not available for listeners, retrying");
-        requestAnimationFrame(setupListeners);
-        return;
-      }
+ useEffect(() => {
+  const canvas = canvasRef.current;
+  if (!canvas) return;
 
-      const onPointerDown = (event) => {
-        lastPositionRef.current = getCanvasCoordinates(event);
-        isDrawingRef.current = true;
-      };
+  const onPointerDown = (event) => {
+    lastPositionRef.current = getCanvasCoordinates(event);
+    isDrawingRef.current = true;
+  };
 
-      const onPointerMove = (event) => {
-        if (!isDrawingRef.current) return;
+  const onPointerMove = (event) => {
+    if (!isDrawingRef.current) return;
 
-        const nextPosition = getCanvasCoordinates(event);
-        const previousPosition = lastPositionRef.current;
+    const nextPosition = getCanvasCoordinates(event);
+    const previousPosition = lastPositionRef.current;
 
-        drawStroke({
-          startX: previousPosition.x,
-          startY: previousPosition.y,
-          endX: nextPosition.x,
-          endY: nextPosition.y,
-        });
+    drawStroke({
+      startX: previousPosition.x,
+      startY: previousPosition.y,
+      endX: nextPosition.x,
+      endY: nextPosition.y,
+      color: brushColor,
+      size: brushSize,
+    });
 
-        if (socketRef.current?.connected) {
-          socketRef.current.emit("whiteboard-draw", {
-            roomId,
-            stroke: {
-              startX: previousPosition.x,
-              startY: previousPosition.y,
-              endX: nextPosition.x,
-              endY: nextPosition.y,
-            },
-          });
-        }
+    if (socketRef.current?.connected) {
+      socketRef.current.emit("draw-stroke", {
+        roomId,
+        startX: previousPosition.x,
+        startY: previousPosition.y,
+        endX: nextPosition.x,
+        endY: nextPosition.y,
+        color: brushColor,
+        size: brushSize,
+      });
+    }
 
-        lastPositionRef.current = nextPosition;
-      };
+    lastPositionRef.current = nextPosition;
+  };
 
-      const onPointerUp = () => {
-        isDrawingRef.current = false;
-      };
+  const onPointerUp = () => {
+    isDrawingRef.current = false;
+  };
 
-      canvas.addEventListener("pointerdown", onPointerDown);
-      canvas.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
-    };
+  canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerup", onPointerUp);
 
-    requestAnimationFrame(setupListeners);
-  }, []);
+  return () => {
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    canvas.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+  };
+}, [brushColor, brushSize, roomId]);
   const handleCopyRoomId = () => {
   navigator.clipboard.writeText(roomId);
   };
@@ -361,6 +386,30 @@ function Room() {
       </main>
     );
   }
+  const handleClearWhiteboard = () => {
+  const canvas = canvasRef.current;
+  const context = contextRef.current;
+
+  if (!canvas || !context) return;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  context.fillStyle = "white";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+};
+
+const handleSaveWhiteboard = () => {
+  const canvas = canvasRef.current;
+
+  if (!canvas) return;
+
+  const link = document.createElement("a");
+
+  link.download = "whiteboard.png";
+  link.href = canvas.toDataURL();
+
+  link.click();
+};
 
   return (
     <div className={darkMode ? "dark-theme" : "light-theme"}>
@@ -414,12 +463,18 @@ function Room() {
 }
       problemPanel={<ProblemPanel />}
       whiteboardPanel={
-        <WhiteboardPanel
-          canvasRef={canvasRef}
-          width={1000}
-          height={300}
-        />
-      }
+  <WhiteboardPanel
+  canvasRef={canvasRef}
+  width={1000}
+  height={300}
+  onClear={handleClearWhiteboard}
+  onSave={handleSaveWhiteboard}
+  brushColor={brushColor}
+  setBrushColor={setBrushColor}
+  brushSize={brushSize}
+  setBrushSize={setBrushSize}
+/>
+}
       outputPanel={
         <OutputPanel output={output}/>
       }

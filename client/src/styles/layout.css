@@ -211,3 +211,55 @@
 .dark-theme .test-case pre{
     background:#374151;
 }
+.whiteboard-toolbar{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.whiteboard-button{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    background:#3b82f6;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.whiteboard-button:hover{
+    background:#2563eb;
+}
+.color-toolbar{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.color-btn{
+    width:35px;
+    height:35px;
+    border:none;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.black{
+    background:black;
+}
+
+.red{
+    background:red;
+}
+
+.blue{
+    background:blue;
+}
+
+.green{
+    background:green;
+}
+
+.brush-toolbar{
+    margin-bottom:20px;
+}
