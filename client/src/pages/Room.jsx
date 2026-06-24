@@ -6,7 +6,7 @@ import Navbar from "../components/common/Navbar";
 import UsersPanel from "../components/Users/UsersPanel";
 import EditorPanel from "../components/Editor/EditorPanel";
 import WhiteboardPanel from "../components/Whiteboard/WhiteboardPanel";
-
+import OutputPanel from "../components/Output/OutputPanel";
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -337,10 +337,7 @@ function Room() {
         </div>
       </section>
 
-      <section className="placeholder-panel">
-        <h2>Output Area</h2>
-        <p>coming soon</p>
-      </section>
+      <OutputPanel />
     </main>
   </>
   );
