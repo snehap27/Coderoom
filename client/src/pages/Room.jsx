@@ -10,8 +10,10 @@ import OutputPanel from "../components/Output/OutputPanel";
 import RoomHeader from "../components/Room/RoomHeader";
 import ProblemPanel from "../components/Problem/ProblemPanel";
 import RoomLayout from "../components/Room/RoomLayout";
+import LanguageSelector from "../components/common/LanguageSelector";
 import RunButton from "../components/common/RunButton";
 import ThemeToggle from "../components/common/ThemeToggle";
+
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -56,6 +58,7 @@ function Room() {
     return savedTheme === "dark";
   });
   const [code, setCode] = useState(DEFAULT_CODE); 
+  const [language, setLanguage] = useState("javascript");
   useEffect(() => {
     localStorage.setItem(
       "theme",
@@ -386,23 +389,29 @@ function Room() {
         <UsersPanel users={users} />
       }
       editorPanel={
-        <div className="editor-section">
+  <div className="editor-section">
 
-          <RunButton handleRun={handleRun} />
+    <LanguageSelector
+      language={language}
+      setLanguage={setLanguage}
+    />
 
-          <EditorPanel
-            code={code}
-            handleCodeChange={handleCodeChange}
-            editorRef={editorRef}
-            monacoRef={monacoRef}
-            socketRef={socketRef}
-            roomId={roomId}
-            username={username}
-            darkMode={darkMode}
-          />
+    <RunButton handleRun={handleRun} />
 
-        </div>
-      }
+    <EditorPanel
+      code={code}
+      handleCodeChange={handleCodeChange}
+      editorRef={editorRef}
+      monacoRef={monacoRef}
+      socketRef={socketRef}
+      roomId={roomId}
+      username={username}
+      darkMode={darkMode}
+      language={language}
+    />
+
+  </div>
+}
       problemPanel={<ProblemPanel />}
       whiteboardPanel={
         <WhiteboardPanel

@@ -9,12 +9,13 @@ function EditorPanel({
   roomId,
   username,
   darkMode,
+  language,
 }) {
   return (
     <div className="editor-container">
       <Editor
         height="100%"
-        defaultLanguage="javascript"
+        language={language}
         theme={darkMode ? "vs-dark" : "light"}
         value={code}
         onChange={handleCodeChange}
