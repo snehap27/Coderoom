@@ -7,6 +7,7 @@ import UsersPanel from "../components/Users/UsersPanel";
 import EditorPanel from "../components/Editor/EditorPanel";
 import WhiteboardPanel from "../components/Whiteboard/WhiteboardPanel";
 import OutputPanel from "../components/Output/OutputPanel";
+import RoomHeader from "../components/Room/RoomHeader";
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -308,11 +309,11 @@ function Room() {
        onLeaveRoom={handleLeaveRoom}
       />
       <main className="page">
-      <section className="room-header">
-        <h1>Room: {room.roomId}</h1>
-        <p>Welcome, {username}</p>
-        <p>Users: {users.length}</p>
-      </section>
+      <RoomHeader
+        roomId={room.roomId}
+        username={username}
+        userCount={users.length}
+      />
 
       <UsersPanel users={users} />
 
