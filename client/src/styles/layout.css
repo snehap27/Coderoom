@@ -196,3 +196,18 @@
 .problem-panel{
     overflow-y:auto;
 }
+.test-case{
+    margin-top:20px;
+}
+
+.test-case pre{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:10px;
+    overflow-x:auto;
+    line-height:1.6;
+}
+
+.dark-theme .test-case pre{
+    background:#374151;
+}
