@@ -4,6 +4,7 @@ import Editor from "@monaco-editor/react";
 import { io } from "socket.io-client";
 import Navbar from "../components/common/Navbar";
 import UsersPanel from "../components/Users/UsersPanel";
+import EditorPanel from "../components/Editor/EditorPanel";
 
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
@@ -317,32 +318,15 @@ function Room() {
       <section className="placeholder-panel">
         <h2>Editor Area</h2>
         <div className="editor-whiteboard">
-          <div className="editor-container">
-            <Editor
-              height="400px"
-              defaultLanguage="javascript"
-              // theme="vs-dark"
-              value={code}
-              onChange={handleCodeChange} // update the code state and emit a code-change event to the server when the user types in the editor
-              options={{ minimap: { enabled: false } }}
-              onMount={(editor, monaco) => {
-                editorRef.current = editor; // store the editor instance in a ref for later use (e.g., to get the current code value)
-                monacoRef.current = monaco;
-
-                editor.onDidChangeCursorPosition((e) => {
-                  // Handle cursor position changes if needed
-                  if (!socketRef.current?.connected) return;
-
-                  socketRef.current.emit("cursor-move", {
-                    roomId,
-                    userId: socketRef.current.id,
-                    username,
-                    position: e.position, // send the cursor position to the server when it changes
-                  });
-                });
-              }}
-            />
-          </div>
+          <EditorPanel
+            code={code}
+            handleCodeChange={handleCodeChange}
+            editorRef={editorRef}
+            monacoRef={monacoRef}
+            socketRef={socketRef}
+            roomId={roomId}
+            username={username}
+          />
 
           <canvas
             ref={canvasRef}
