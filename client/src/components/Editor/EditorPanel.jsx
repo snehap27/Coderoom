@@ -12,7 +12,7 @@ function EditorPanel({
   return (
     <div className="editor-container">
       <Editor
-        height="400px"
+        height="500px"
         defaultLanguage="javascript"
         value={code}
         onChange={handleCodeChange}

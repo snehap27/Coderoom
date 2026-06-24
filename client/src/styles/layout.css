@@ -5,20 +5,22 @@
 }
 
 .top-layout{
-    display:flex;
+    display:grid;
+    grid-template-columns:250px 1fr 300px;
     gap:20px;
+    align-items:start;
 }
 
 .users-column{
-    flex:1;
+    min-height:400px;
 }
 
 .editor-column{
-    flex:2;
+    min-height:400px;
 }
 
 .problem-column{
-    flex:1;
+    min-height:400px;
 }
 
 .whiteboard-row{
@@ -27,4 +29,10 @@
 
 .output-row{
     width:100%;
+}
+
+@media(max-width:1000px){
+    .top-layout{
+        grid-template-columns:1fr;
+    }
 }

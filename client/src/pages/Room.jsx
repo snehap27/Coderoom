@@ -336,8 +336,8 @@ function Room() {
       whiteboardPanel={
         <WhiteboardPanel
           canvasRef={canvasRef}
-          width={400}
-          height={400}
+          width={1000}
+          height={300}
         />
       }
       outputPanel={<OutputPanel />}
