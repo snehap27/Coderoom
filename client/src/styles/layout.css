@@ -1,35 +1,92 @@
 .room-layout{
     display:flex;
     flex-direction:column;
-    gap:20px;
+    gap:25px;
+    padding:20px;
 }
 
+/* Top 3-column layout */
 .top-layout{
     display:grid;
-    grid-template-columns:250px minmax(0,1fr) 300px;
-    gap:20px;
-    align-items:start;
+    grid-template-columns:180px 2fr 260px;
+    gap:25px;
 }
 
-/* VERY IMPORTANT */
+/* Column heights */
 .users-column,
 .editor-column,
 .problem-column{
+    height:650px;
     min-width:0;
-    height:500px;
 }
 
-/* Editor */
+/* Editor column */
 .editor-column{
     overflow:hidden;
 }
 
-/* Problem */
-.problem-panel{
-    height:500px;
+/* Card styling */
+.users-panel,
+.problem-panel,
+.editor-container,
+.output-panel,
+.whiteboard-row{
+    background:white;
     border:1px solid #ddd;
-    box-sizing:border-box;
+    border-radius:15px;
+}
+
+/* Padding */
+.users-panel,
+.problem-panel,
+.output-panel{
     padding:20px;
+    box-sizing:border-box;
+}
+
+/* Editor */
+.editor-container{
+    height:500px;
+    overflow:hidden;
+}
+
+/* Users panel */
+.users-panel{
+    height:100%;
+    overflow-y:auto;
+}
+
+/* Problem panel */
+.problem-panel{
+    height:100%;
+    overflow-y:auto;
+}
+
+/* User list */
+.users-panel ul{
+    padding:0;
+}
+
+.users-panel li{
+    list-style:none;
+}
+
+/* User card */
+.user-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px;
+    border-radius:12px;
+    background:#f8fafc;
+    margin-bottom:12px;
+    font-size:17px;
+}
+
+/* Headings */
+.users-panel h2,
+.problem-panel h2{
+    margin-bottom:30px;
 }
 
 /* Whiteboard */
@@ -39,10 +96,11 @@
 
 .whiteboard-toggle{
     width:100%;
-    padding:16px 20px;
+    text-align:left;
+    padding:18px 20px;
     background:white;
     border:1px solid #ddd;
-    border-radius:12px;
+    border-radius:15px;
     font-size:18px;
     font-weight:600;
     cursor:pointer;
@@ -50,6 +108,13 @@
 
 .whiteboard-row{
     margin-top:10px;
+    padding:20px;
+}
+
+.whiteboard{
+    width:100%;
+    background:white;
+    border-radius:15px;
 }
 
 /* Output */
@@ -57,7 +122,12 @@
     width:100%;
 }
 
-@media(max-width:1000px){
+.output-panel{
+    min-height:150px;
+}
+
+/* Responsive */
+@media (max-width:1000px){
 
     .top-layout{
         grid-template-columns:1fr;
@@ -68,35 +138,4 @@
     .problem-column{
         height:auto;
     }
-}
-.editor-container{
-    height:500px;
-    border:1px solid #ddd;
-}
-.users-panel,
-.problem-panel{
-    border:1px solid #ddd;
-    height:500px;
-    padding:20px;
-    box-sizing:border-box;
-}
-.users-panel,
-.problem-panel,
-.editor-container,
-.output-panel,
-.whiteboard-row {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-}
-.users-panel,
-.problem-panel,
-.output-panel {
-    padding: 20px;
-    box-sizing: border-box;
-}
-.room-layout{
-    display:flex;
-    flex-direction:column;
-    gap:25px;
 }

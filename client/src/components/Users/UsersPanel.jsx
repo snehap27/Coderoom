@@ -5,9 +5,9 @@ function UsersPanel({ users }) {
 
       <ul>
         {users.map((u) => (
-          <li key={u.socketId}>
+          <li className="user-card" key={u.socketId}>
             🟢 {u.username}
-      </li>
+          </li>
         ))}
       </ul>
     </section>

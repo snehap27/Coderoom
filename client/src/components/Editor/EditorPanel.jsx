@@ -14,6 +14,7 @@ function EditorPanel({
       <Editor
         height="500px"
         defaultLanguage="javascript"
+        theme="vs-dark"
         value={code}
         onChange={handleCodeChange}
         options={{

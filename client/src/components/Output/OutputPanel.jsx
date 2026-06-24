@@ -2,7 +2,7 @@ function OutputPanel() {
   return (
     <div className="output-panel">
       <h2>Output</h2>
-      <p>Output will appear here</p>
+      <p>Output will appear here.</p>
     </div>
   );
 }

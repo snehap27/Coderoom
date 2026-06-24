@@ -1,4 +1,6 @@
 import "../../styles/navbar.css";
+import { useState } from "react";
+
 
 function Navbar({
   roomId,
@@ -6,6 +8,7 @@ function Navbar({
   onCopyRoomId,
   onLeaveRoom,
 }) {
+  const [copied, setCopied] = useState(false);
   return (
     <header className="navbar">
       <div className="navbar-logo">
@@ -15,9 +18,19 @@ function Navbar({
       <div className="navbar-room">
         <span>ID: {roomId}</span>
 
-        <button onClick={onCopyRoomId}>
-          📋
-        </button>
+        <button
+          className="copy-button"
+          onClick={() => {
+          onCopyRoomId();
+          setCopied(true);
+
+          setTimeout(() => {
+          setCopied(false);
+      },  2000);
+    }}
+  >
+  {copied ? "Copied!" : "📋"}
+</button>
       </div>
 
       <div className="navbar-actions">
