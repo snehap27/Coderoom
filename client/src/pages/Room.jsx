@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import Navbar from "../components/common/Navbar";
 import UsersPanel from "../components/Users/UsersPanel";
 import EditorPanel from "../components/Editor/EditorPanel";
+import WhiteboardPanel from "../components/Whiteboard/WhiteboardPanel";
 
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
@@ -328,11 +329,10 @@ function Room() {
             username={username}
           />
 
-          <canvas
-            ref={canvasRef}
+          <WhiteboardPanel
+            canvasRef={canvasRef}
             width={400}
             height={400}
-            className="whiteboard"
           />
         </div>
       </section>
