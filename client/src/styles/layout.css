@@ -6,33 +6,97 @@
 
 .top-layout{
     display:grid;
-    grid-template-columns:250px 1fr 300px;
+    grid-template-columns:250px minmax(0,1fr) 300px;
     gap:20px;
     align-items:start;
 }
 
-.users-column{
-    min-height:400px;
-}
-
-.editor-column{
-    min-height:400px;
-}
-
+/* VERY IMPORTANT */
+.users-column,
+.editor-column,
 .problem-column{
-    min-height:400px;
+    min-width:0;
+    height:500px;
 }
 
-.whiteboard-row{
+/* Editor */
+.editor-column{
+    overflow:hidden;
+}
+
+/* Problem */
+.problem-panel{
+    height:500px;
+    border:1px solid #ddd;
+    box-sizing:border-box;
+    padding:20px;
+}
+
+/* Whiteboard */
+.whiteboard-section{
     width:100%;
 }
 
+.whiteboard-toggle{
+    width:100%;
+    padding:16px 20px;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.whiteboard-row{
+    margin-top:10px;
+}
+
+/* Output */
 .output-row{
     width:100%;
 }
 
 @media(max-width:1000px){
+
     .top-layout{
         grid-template-columns:1fr;
     }
+
+    .users-column,
+    .editor-column,
+    .problem-column{
+        height:auto;
+    }
+}
+.editor-container{
+    height:500px;
+    border:1px solid #ddd;
+}
+.users-panel,
+.problem-panel{
+    border:1px solid #ddd;
+    height:500px;
+    padding:20px;
+    box-sizing:border-box;
+}
+.users-panel,
+.problem-panel,
+.editor-container,
+.output-panel,
+.whiteboard-row {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+}
+.users-panel,
+.problem-panel,
+.output-panel {
+    padding: 20px;
+    box-sizing: border-box;
+}
+.room-layout{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
 }

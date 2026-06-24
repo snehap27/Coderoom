@@ -1,11 +1,13 @@
 function UsersPanel({ users }) {
   return (
-    <section className="placeholder-panel">
+    <section className="users-panel">
       <h2>Active Users</h2>
 
       <ul>
         {users.map((u) => (
-          <li key={u.socketId}>{u.username}</li>
+          <li key={u.socketId}>
+            🟢 {u.username}
+      </li>
         ))}
       </ul>
     </section>

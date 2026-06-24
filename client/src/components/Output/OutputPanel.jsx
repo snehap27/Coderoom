@@ -1,9 +1,9 @@
 function OutputPanel() {
   return (
-    <section className="placeholder-panel">
-      <h2>Output Area</h2>
-      <p>coming soon</p>
-    </section>
+    <div className="output-panel">
+      <h2>Output</h2>
+      <p>Output will appear here</p>
+    </div>
   );
 }
 

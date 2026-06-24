@@ -1,4 +1,5 @@
 import "../../styles/layout.css";
+import { useState } from "react";
 
 function RoomLayout({
   usersPanel,
@@ -7,6 +8,7 @@ function RoomLayout({
   whiteboardPanel,
   outputPanel,
 }) {
+   const [showWhiteboard, setShowWhiteboard] = useState(true);
   return (
     <div className="room-layout">
 
@@ -24,8 +26,20 @@ function RoomLayout({
         </div>
       </div>
 
-      <div className="whiteboard-row">
-        {whiteboardPanel}
+      <div className="whiteboard-section">
+
+        <button
+          className="whiteboard-toggle"
+          onClick={() => setShowWhiteboard(!showWhiteboard)}
+        >
+        {showWhiteboard ? "▼ Whiteboard" : "▶ Whiteboard"}
+        </button>
+
+        {showWhiteboard && (
+        <div className="whiteboard-row">
+          {whiteboardPanel}
+        </div>
+        )}
       </div>
 
       <div className="output-row">
