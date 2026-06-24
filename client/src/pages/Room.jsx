@@ -311,7 +311,7 @@ function Room() {
        onLeaveRoom={handleLeaveRoom}
       />
       <main className="page">
-      <RoomHeader />
+    
       <RoomLayout
         usersPanel={
         <UsersPanel users={users} />

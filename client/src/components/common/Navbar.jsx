@@ -8,22 +8,22 @@ function Navbar({
 }) {
   return (
     <header className="navbar">
-      <h1 className="logo">CodeRoom</h1>
+      <div className="navbar-logo">
+        <h1>CodeRoom</h1>
+      </div>
 
-      <div className="room-info">
+      <div className="navbar-room">
         <span>ID: {roomId}</span>
 
-        <button
-          className="copy-btn"
-          onClick={onCopyRoomId}
-        >
+        <button onClick={onCopyRoomId}>
           📋
         </button>
       </div>
 
       <div className="navbar-actions">
-        <div className="user-count">
-          👥 {userCount} user{userCount !== 1 ? "s" : ""}
+
+        <div className="user-badge">
+          👥 {userCount} {userCount === 1 ? "user" : "users"}
         </div>
 
         <button
@@ -32,6 +32,7 @@ function Navbar({
         >
           Leave
         </button>
+
       </div>
     </header>
   );
