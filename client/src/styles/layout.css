@@ -183,3 +183,16 @@
     overflow:hidden;
     box-sizing:border-box;
 }
+.problem-panel pre{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:10px;
+    overflow-x:auto;
+}
+
+.dark-theme .problem-panel pre{
+    background:#374151;
+}
+.problem-panel{
+    overflow-y:auto;
+}
