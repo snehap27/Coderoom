@@ -8,6 +8,11 @@ function Navbar({
   onCopyRoomId,
   onLeaveRoom,
   themeToggle,
+  timer,
+  timerRunning,
+  onStartTimer,
+  onPauseTimer,
+  onResetTimer
 }) {
   const [copied, setCopied] = useState(false);
   return (
@@ -35,6 +40,36 @@ function Navbar({
       </div>
 
       <div className="navbar-actions">
+        <div className="timer-controls">
+
+          {timerRunning ? (
+            <button
+              className="timer-button"
+              onClick={onPauseTimer}
+            >
+              ⏸
+            </button>
+          ):(
+            <button
+            className="timer-button"
+            onClick={onStartTimer}
+            >
+              ▶
+            </button>
+          )}
+
+          <button
+            className="timer-button"
+            onClick={onResetTimer}
+          >
+            🔄
+          </button>
+
+          <div className="timer-box">
+            🕒 {timer}
+          </div>
+
+      </div>
         {themeToggle}
 
         <div className="user-badge">

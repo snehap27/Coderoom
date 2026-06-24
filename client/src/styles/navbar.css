@@ -82,3 +82,35 @@
     font-size:16px;
     font-weight:600;
 }
+.timer-box{
+    padding:14px 20px;
+    border-radius:12px;
+    background:#dbeafe;
+    color:#1e293b;
+    font-size:17px;
+    font-weight:600;
+}
+.dark-theme .timer-box{
+    background:#374151;
+    color:white;
+}
+.timer-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.timer-button{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:12px;
+    background:#334155;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.timer-button:hover{
+    background:#475569;
+}

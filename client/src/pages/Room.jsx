@@ -62,6 +62,18 @@ function Room() {
       darkMode ? "dark" : "light"
     );
   }, [darkMode]);// code editor content
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(true);
+  useEffect(() => {
+        if (!timerRunning) return;
+
+        const interval = setInterval(() => {
+          setElapsedTime(prev => prev + 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [timerRunning]);
+
 
   useEffect(() => {
     const socket = io("http://localhost:3000");
@@ -85,7 +97,6 @@ function Room() {
         setCode(nextCode);
       }
     };
-
     const handleCursorUpdate = ({ userId, position }) => {
       if (!editorRef.current || !monacoRef.current || !userId || !position) return;
 
@@ -306,6 +317,32 @@ function Room() {
   socketRef.current?.disconnect();
   window.location.href = "/";
   };
+  const formatTime = (seconds) => {
+      const hrs = Math.floor(seconds / 3600)
+        .toString()
+        .padStart(2, "0");
+
+      const mins = Math.floor((seconds % 3600) / 60)
+        .toString()
+        .padStart(2, "0");
+
+      const secs = (seconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+      return `${hrs}:${mins}:${secs}`;
+  };
+  const handleStartTimer = () => {
+  setTimerRunning(true);
+  };
+
+  const handlePauseTimer = () => {
+    setTimerRunning(false);
+  };
+
+  const handleResetTimer = () => {
+    setElapsedTime(0);
+  };
   if (isLoading) {
     return (
       <main className="page">
@@ -328,6 +365,11 @@ function Room() {
      <Navbar
        roomId={roomId}
        userCount={users.length}
+       timer={formatTime(elapsedTime)}
+       timerRunning={timerRunning}
+       onStartTimer={handleStartTimer}
+       onPauseTimer={handlePauseTimer}
+       onResetTimer={handleResetTimer}
        onCopyRoomId={handleCopyRoomId}
        onLeaveRoom={handleLeaveRoom}
        themeToggle={
