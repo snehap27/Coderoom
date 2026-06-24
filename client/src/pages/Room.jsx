@@ -11,6 +11,7 @@ import RoomHeader from "../components/Room/RoomHeader";
 import ProblemPanel from "../components/Problem/ProblemPanel";
 import RoomLayout from "../components/Room/RoomLayout";
 import RunButton from "../components/common/RunButton";
+import ThemeToggle from "../components/common/ThemeToggle";
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -45,6 +46,7 @@ function Room() {
   const [error, setError] = useState(""); // error state to display any errors that occur while fetching room data
   const [users, setUsers] = useState([]); // active users in the room
   const [output, setOutput] = useState("");
+  const [darkMode, setDarkMode] = useState(true);
   const [code, setCode] = useState(DEFAULT_CODE); // code editor content
 
   useEffect(() => {
@@ -307,12 +309,19 @@ function Room() {
   }
 
   return (
-    <>
+    <div className={darkMode ? "dark-theme" : "light-theme"}>
+    
      <Navbar
        roomId={roomId}
        userCount={users.length}
        onCopyRoomId={handleCopyRoomId}
        onLeaveRoom={handleLeaveRoom}
+       themeToggle={
+        <ThemeToggle
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
+  }
       />
       <main className="page">
     
@@ -321,7 +330,8 @@ function Room() {
         <UsersPanel users={users} />
       }
       editorPanel={
-        <>
+        <div className="editor-section">
+
           <RunButton handleRun={handleRun} />
 
           <EditorPanel
@@ -332,8 +342,10 @@ function Room() {
             socketRef={socketRef}
             roomId={roomId}
             username={username}
+            darkMode={darkMode}
           />
-        </>
+
+        </div>
       }
       problemPanel={<ProblemPanel />}
       whiteboardPanel={
@@ -348,7 +360,7 @@ function Room() {
       }
     />
     </main>
-</>
+</div>
 );
 }
 export default Room;

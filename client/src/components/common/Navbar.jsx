@@ -7,6 +7,7 @@ function Navbar({
   userCount,
   onCopyRoomId,
   onLeaveRoom,
+  themeToggle,
 }) {
   const [copied, setCopied] = useState(false);
   return (
@@ -34,6 +35,7 @@ function Navbar({
       </div>
 
       <div className="navbar-actions">
+        {themeToggle}
 
         <div className="user-badge">
           👥 {userCount} {userCount === 1 ? "user" : "users"}

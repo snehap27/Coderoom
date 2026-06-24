@@ -73,3 +73,12 @@
 .copy-button:active{
     transform:scale(0.95);
 }
+.theme-toggle{
+    padding:14px 18px;
+    border:none;
+    border-radius:12px;
+    background:#dbeafe;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+}

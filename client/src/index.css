@@ -101,3 +101,33 @@ body{
 body{
     background:#f5f5f5;
 }
+.light-theme{
+    background:#ececec;
+    min-height:100vh;
+    color:#0f172a;
+}
+
+.dark-theme{
+    background:#111827;
+    min-height:100vh;
+    color:white;
+}
+.dark-theme .users-panel,
+.dark-theme .problem-panel,
+.dark-theme .output-panel,
+.dark-theme .whiteboard-row,
+.dark-theme .whiteboard-toggle{
+    background:#1f2937;
+    color:white;
+    border-color:#374151;
+}
+.dark-theme .user-card{
+    background:#374151;
+}
+.dark-theme .navbar{
+    background:#111827;
+    border-bottom:1px solid #374151;
+}
+.dark-theme .editor-container{
+    border-color:#374151;
+}
