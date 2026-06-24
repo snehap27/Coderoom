@@ -10,6 +10,7 @@ import OutputPanel from "../components/Output/OutputPanel";
 import RoomHeader from "../components/Room/RoomHeader";
 import ProblemPanel from "../components/Problem/ProblemPanel";
 import RoomLayout from "../components/Room/RoomLayout";
+import RunButton from "../components/common/RunButton";
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -43,6 +44,7 @@ function Room() {
   const [isLoading, setIsLoading] = useState(true); // loading state to indicate whether the room data is being fetched
   const [error, setError] = useState(""); // error state to display any errors that occur while fetching room data
   const [users, setUsers] = useState([]); // active users in the room
+  const [output, setOutput] = useState("");
   const [code, setCode] = useState(DEFAULT_CODE); // code editor content
 
   useEffect(() => {
@@ -91,7 +93,6 @@ function Room() {
       delete remoteCursorRef.current[userId]; // remove the old decorations for this user
       remoteCursorRef.current[userId] = newDecorations; // store the new decorations for this user
     };
-
     const handleWhiteboardData = (stroke) => {
       if (!contextRef.current) {
         pendingStrokesRef.current.push(stroke);
@@ -221,6 +222,9 @@ function Room() {
       });
     }
   };
+  const handleRun = () => {
+      setOutput("Running...\n\nFeature coming in Phase 16.");
+    };
 
   const handlePointerUp = () => {
     isDrawingRef.current = false;
@@ -317,20 +321,19 @@ function Room() {
         <UsersPanel users={users} />
       }
       editorPanel={
-        <section className="placeholder-panel">
-          <h2>Editor Area</h2>
-          <div className="editor-whiteboard">
-             <EditorPanel
-              code={code}
-              handleCodeChange={handleCodeChange}
-              editorRef={editorRef}
-              monacoRef={monacoRef}
-              socketRef={socketRef}
-              roomId={roomId}
-              username={username}
-            />
-          </div>
-        </section>
+        <>
+          <RunButton handleRun={handleRun} />
+
+          <EditorPanel
+            code={code}
+            handleCodeChange={handleCodeChange}
+            editorRef={editorRef}
+            monacoRef={monacoRef}
+            socketRef={socketRef}
+            roomId={roomId}
+            username={username}
+          />
+        </>
       }
       problemPanel={<ProblemPanel />}
       whiteboardPanel={
@@ -340,7 +343,9 @@ function Room() {
           height={300}
         />
       }
-      outputPanel={<OutputPanel />}
+      outputPanel={
+        <OutputPanel output={output}/>
+      }
     />
     </main>
 </>

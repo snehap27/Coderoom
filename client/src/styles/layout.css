@@ -139,3 +139,28 @@
         height:auto;
     }
 }
+.output-box{
+    background:#1e1e1e;
+    color:#ffffff;
+    padding:15px;
+    border-radius:10px;
+    min-height:80px;
+    overflow-x:auto;
+    font-family:monospace;
+}
+.run-button{
+    width:100%;
+    background:#22c55e;
+    color:white;
+    border:none;
+    padding:15px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+.run-button:hover{
+    background:#16a34a;
+}
