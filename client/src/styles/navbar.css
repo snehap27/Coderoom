@@ -1,0 +1,49 @@
+.navbar {
+  height: 70px;
+  padding: 0 40px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-bottom: 1px solid #ddd;
+  background: white;
+}
+
+.logo {
+  font-size: 2rem;
+  color: #14213d;
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.copy-btn {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-count {
+  background: #e6f0ff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.leave-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}

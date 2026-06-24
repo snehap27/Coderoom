@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { io } from "socket.io-client";
+import Navbar from "../components/common/Navbar";
 
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
@@ -272,7 +273,13 @@ function Room() {
 
     requestAnimationFrame(setupListeners);
   }, []);
-
+  const handleCopyRoomId = () => {
+  navigator.clipboard.writeText(roomId);
+  };
+  const handleLeaveRoom = () => {
+  socketRef.current?.disconnect();
+  window.location.href = "/";
+  };
   if (isLoading) {
     return (
       <main className="page">
@@ -290,7 +297,14 @@ function Room() {
   }
 
   return (
-    <main className="page">
+    <>
+     <Navbar
+       roomId={roomId}
+       userCount={users.length}
+       onCopyRoomId={handleCopyRoomId}
+       onLeaveRoom={handleLeaveRoom}
+      />
+      <main className="page">
       <section className="room-header">
         <h1>Room: {room.roomId}</h1>
         <p>Welcome, {username}</p>
@@ -350,6 +364,7 @@ function Room() {
         <p>coming soon</p>
       </section>
     </main>
+  </>
   );
 }
 
