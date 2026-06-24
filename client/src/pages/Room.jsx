@@ -8,6 +8,7 @@ import EditorPanel from "../components/Editor/EditorPanel";
 import WhiteboardPanel from "../components/Whiteboard/WhiteboardPanel";
 import OutputPanel from "../components/Output/OutputPanel";
 import RoomHeader from "../components/Room/RoomHeader";
+import ProblemPanel from "../components/Problem/ProblemPanel";
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -337,7 +338,7 @@ function Room() {
           />
         </div>
       </section>
-
+      <ProblemPanel />
       <OutputPanel />
     </main>
   </>
