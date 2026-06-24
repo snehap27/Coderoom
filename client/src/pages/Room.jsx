@@ -46,8 +46,22 @@ function Room() {
   const [error, setError] = useState(""); // error state to display any errors that occur while fetching room data
   const [users, setUsers] = useState([]); // active users in the room
   const [output, setOutput] = useState("");
-  const [darkMode, setDarkMode] = useState(true);
-  const [code, setCode] = useState(DEFAULT_CODE); // code editor content
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === null) {
+      return true; // default dark mode
+    }
+
+    return savedTheme === "dark";
+  });
+  const [code, setCode] = useState(DEFAULT_CODE); 
+  useEffect(() => {
+    localStorage.setItem(
+      "theme",
+      darkMode ? "dark" : "light"
+    );
+  }, [darkMode]);// code editor content
 
   useEffect(() => {
     const socket = io("http://localhost:3000");

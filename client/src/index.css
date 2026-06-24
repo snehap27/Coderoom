@@ -131,3 +131,19 @@ body{
 .dark-theme .editor-container{
     border-color:#374151;
 }
+body,
+.light-theme,
+.dark-theme,
+.users-panel,
+.problem-panel,
+.output-panel,
+.user-card,
+.navbar,
+.whiteboard-row,
+.whiteboard-toggle,
+.theme-toggle {
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
