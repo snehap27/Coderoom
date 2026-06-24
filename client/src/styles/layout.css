@@ -1,0 +1,30 @@
+.room-layout{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.top-layout{
+    display:flex;
+    gap:20px;
+}
+
+.users-column{
+    flex:1;
+}
+
+.editor-column{
+    flex:2;
+}
+
+.problem-column{
+    flex:1;
+}
+
+.whiteboard-row{
+    width:100%;
+}
+
+.output-row{
+    width:100%;
+}

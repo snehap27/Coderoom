@@ -9,6 +9,7 @@ import WhiteboardPanel from "../components/Whiteboard/WhiteboardPanel";
 import OutputPanel from "../components/Output/OutputPanel";
 import RoomHeader from "../components/Room/RoomHeader";
 import ProblemPanel from "../components/Problem/ProblemPanel";
+import RoomLayout from "../components/Room/RoomLayout";
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
   console.log("Welcome to CodeRoom");
@@ -310,39 +311,39 @@ function Room() {
        onLeaveRoom={handleLeaveRoom}
       />
       <main className="page">
-      <RoomHeader
-        roomId={room.roomId}
-        username={username}
-        userCount={users.length}
-      />
-
-      <UsersPanel users={users} />
-
-      <section className="placeholder-panel">
-        <h2>Editor Area</h2>
-        <div className="editor-whiteboard">
-          <EditorPanel
-            code={code}
-            handleCodeChange={handleCodeChange}
-            editorRef={editorRef}
-            monacoRef={monacoRef}
-            socketRef={socketRef}
-            roomId={roomId}
-            username={username}
-          />
-
-          <WhiteboardPanel
-            canvasRef={canvasRef}
-            width={400}
-            height={400}
-          />
-        </div>
-      </section>
-      <ProblemPanel />
-      <OutputPanel />
+      <RoomHeader />
+      <RoomLayout
+        usersPanel={
+        <UsersPanel users={users} />
+      }
+      editorPanel={
+        <section className="placeholder-panel">
+          <h2>Editor Area</h2>
+          <div className="editor-whiteboard">
+             <EditorPanel
+              code={code}
+              handleCodeChange={handleCodeChange}
+              editorRef={editorRef}
+              monacoRef={monacoRef}
+              socketRef={socketRef}
+              roomId={roomId}
+              username={username}
+            />
+          </div>
+        </section>
+      }
+      problemPanel={<ProblemPanel />}
+      whiteboardPanel={
+        <WhiteboardPanel
+          canvasRef={canvasRef}
+          width={400}
+          height={400}
+        />
+      }
+      outputPanel={<OutputPanel />}
+    />
     </main>
-  </>
-  );
+</>
+);
 }
-
 export default Room;
