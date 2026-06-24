@@ -3,6 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { io } from "socket.io-client";
 import Navbar from "../components/common/Navbar";
+import UsersPanel from "../components/Users/UsersPanel";
 
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
@@ -311,14 +312,7 @@ function Room() {
         <p>Users: {users.length}</p>
       </section>
 
-      <section className="placeholder-panel">
-        <h2>Active Users</h2>
-        <ul>
-          {users.map((u) => (
-            <li key={u.socketId}>{u.username}</li>
-          ))}
-        </ul>
-      </section>
+      <UsersPanel users={users} />
 
       <section className="placeholder-panel">
         <h2>Editor Area</h2>
