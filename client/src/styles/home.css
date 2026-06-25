@@ -401,3 +401,160 @@ margin:auto;
 }
 
 }
+.hero-heading{
+
+    font-size:52px;
+
+    line-height:1.1;
+
+    font-weight:800;
+
+    margin-top:-10px;
+
+    margin-bottom:10px;
+}
+.typing-text{
+
+    color:#3b82f6;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    min-height:55px;
+
+    margin-bottom:15px;
+}
+.hero-left{
+
+    animation:fadeLeft 1s ease;
+}
+
+.login-card{
+
+    animation:fadeUp 1s ease;
+}
+
+.preview-card{
+
+    animation:fadeRight 1s ease;
+}
+
+@keyframes fadeLeft{
+
+from{
+
+opacity:0;
+
+transform:translateX(-60px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:none;
+
+}
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(60px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:none;
+
+}
+
+}
+
+@keyframes fadeRight{
+
+from{
+
+opacity:0;
+
+transform:translateX(60px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:none;
+
+}
+
+}
+.status-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    background:#1f2937;
+
+    margin-top:15px;
+
+    transition:.3s;
+}
+
+.status-card:hover{
+
+    transform:translateX(8px);
+
+    background:#243244;
+}
+
+.status-dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    box-shadow:
+
+    0 0 12px #22c55e;
+}
+.typing-text{
+
+    margin-top:10px;
+
+    margin-bottom:20px;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#3b82f6;
+
+    min-height:42px;
+
+    letter-spacing:.5px;
+
+    text-shadow:
+        0 0 15px rgba(59,130,246,.35);
+}

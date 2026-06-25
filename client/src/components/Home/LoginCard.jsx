@@ -9,6 +9,11 @@ function LoginCard({
 }) {
   return (
     <div className="login-card">
+      <h2>Welcome 👋</h2>
+
+<p className="login-subtitle">
+Start a new interview room or join an existing one.
+</p>
 
       <label>
         Name

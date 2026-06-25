@@ -2,26 +2,31 @@ function PreviewPanel() {
   return (
     <div className="preview-card">
 
-      <h2>Why CodeRoom?</h2>
+      <h2>Workspace Status</h2>
 
-      <div className="feature-card">
-        ⚡ Real-time Code Sync
+      <div className="status-card">
+        <span className="status-dot"></span>
+        Code Editor Connected
       </div>
 
-      <div className="feature-card">
-        👥 Multi-user Collaboration
+      <div className="status-card">
+        <span className="status-dot"></span>
+        Whiteboard Ready
       </div>
 
-      <div className="feature-card">
-        🎨 Shared Whiteboard
+      <div className="status-card">
+        <span className="status-dot"></span>
+        Interview Timer Available
       </div>
 
-      <div className="feature-card">
-        ⏱ Interview Timer
+      <div className="status-card">
+        <span className="status-dot"></span>
+        Cursor Tracking Active
       </div>
 
-      <div className="feature-card">
-        🌙 Dark Mode
+      <div className="status-card">
+        <span className="status-dot"></span>
+        Multi-user Rooms
       </div>
 
     </div>
