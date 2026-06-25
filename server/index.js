@@ -54,7 +54,7 @@ app.get("/room/:roomId", (req, res) => {
   res.json(room);
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Socket.IO connection handling
 io.on("connection", (socket) => {
