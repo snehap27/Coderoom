@@ -84,7 +84,7 @@ function Room() {
 
 
   useEffect(() => {
-    const socket = io("http://localhost:3000");
+    const socket = io("https://coderoom-fi7c.onrender.com");
     socketRef.current = socket;
 
     const handleConnect = () => {
@@ -172,7 +172,7 @@ function Room() {
   }, [code]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/room/${roomId}`)
+    fetch(`https://coderoom-fi7c.onrender.com/room/${roomId}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Room not found");
