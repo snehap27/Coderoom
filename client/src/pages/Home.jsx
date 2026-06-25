@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import HeroSection from "../components/Home/HeroSection";
+import LoginCard from "../components/Home/LoginCard";
+import PreviewPanel from "../components/Home/PreviewPanel";
+import AnimatedBackground from "../components/Home/AnimatedBackground";
+import "../styles/Home.css";
 
 function Home() {
   const [username, setUsername] = useState("");
@@ -54,38 +59,28 @@ function Home() {
   };
 
   return (
-    <main className="page">
-      <h1>CodeRoom</h1>
+  <>
+    <AnimatedBackground />
 
-      <div className="actions">
-        <label>
-          Name
-          <input
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            placeholder="Enter your name"
-          />
-        </label>
+    <main className="home-page">
 
-        {error && <p className="error">{error}</p>}
+      <HeroSection />
 
-        <button type="button" onClick={createRoom}>
-          Create Room
-        </button>
+      <LoginCard
+        username={username}
+        setUsername={setUsername}
+        roomId={roomId}
+        setRoomId={setRoomId}
+        error={error}
+        createRoom={createRoom}
+        joinRoom={joinRoom}
+      />
 
-        <form onSubmit={joinRoom}>
-          <input
-            type="text"
-            value={roomId}
-            onChange={(event) => setRoomId(event.target.value)}
-            placeholder="Enter Room ID"
-          />
-          <button type="submit">Join Room</button>
-        </form>
-      </div>
+      <PreviewPanel />
+
     </main>
-  );
+  </>
+);
 }
 
 export default Home;

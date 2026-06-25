@@ -2,6 +2,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { io } from "socket.io-client";
+import Navbar from "../components/common/Navbar";
+import UsersPanel from "../components/Users/UsersPanel";
+import EditorPanel from "../components/Editor/EditorPanel";
+import WhiteboardPanel from "../components/Whiteboard/WhiteboardPanel";
+import OutputPanel from "../components/Output/OutputPanel";
+import RoomHeader from "../components/Room/RoomHeader";
+import ProblemPanel from "../components/Problem/ProblemPanel";
+import RoomLayout from "../components/Room/RoomLayout";
+import LanguageSelector from "../components/common/LanguageSelector";
+import RunButton from "../components/common/RunButton";
+import ThemeToggle from "../components/common/ThemeToggle";
 
 // this is the default code that will be displayed in the editor when a user joins a room for the first time.
 const DEFAULT_CODE = `function hello() {
@@ -36,7 +47,41 @@ function Room() {
   const [isLoading, setIsLoading] = useState(true); // loading state to indicate whether the room data is being fetched
   const [error, setError] = useState(""); // error state to display any errors that occur while fetching room data
   const [users, setUsers] = useState([]); // active users in the room
-  const [code, setCode] = useState(DEFAULT_CODE); // code editor content
+  const [output, setOutput] = useState("");
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === null) {
+      return true; // default dark mode
+    }
+
+    return savedTheme === "dark";
+  });
+  const [code, setCode] = useState(DEFAULT_CODE); 
+  const [language, setLanguage] = useState("javascript");
+  const [brushColor, setBrushColor] = useState("black");
+  const [brushSize, setBrushSize] = useState(2);
+  useEffect(() => {
+  console.log("Brush color:", brushColor);
+}, [brushColor]);
+  useEffect(() => {
+    localStorage.setItem(
+      "theme",
+      darkMode ? "dark" : "light"
+    );
+  }, [darkMode]);// code editor content
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(true);
+  useEffect(() => {
+        if (!timerRunning) return;
+
+        const interval = setInterval(() => {
+          setElapsedTime(prev => prev + 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [timerRunning]);
+
 
   useEffect(() => {
     const socket = io("http://localhost:3000");
@@ -60,7 +105,6 @@ function Room() {
         setCode(nextCode);
       }
     };
-
     const handleCursorUpdate = ({ userId, position }) => {
       if (!editorRef.current || !monacoRef.current || !userId || !position) return;
 
@@ -84,7 +128,6 @@ function Room() {
       delete remoteCursorRef.current[userId]; // remove the old decorations for this user
       remoteCursorRef.current[userId] = newDecorations; // store the new decorations for this user
     };
-
     const handleWhiteboardData = (stroke) => {
       if (!contextRef.current) {
         pendingStrokesRef.current.push(stroke);
@@ -164,8 +207,6 @@ function Room() {
       const context = canvas.getContext("2d");
       context.lineCap = "round";
       context.lineJoin = "round";
-      context.strokeStyle = "black";
-      context.lineWidth = 2;
       context.fillStyle = "white";
       context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -187,20 +228,42 @@ function Room() {
     };
   };
 
-  const drawStroke = ({ startX, startY, endX, endY }) => {
-    const context = contextRef.current;
-    if (!context) {
-      pendingStrokesRef.current.push({ startX, startY, endX, endY });
-      return;
-    }
+const drawStroke = ({
+  startX,
+  startY,
+  endX,
+  endY,
+  color,
+  size,
+}) => {
 
-    context.beginPath();
-    context.moveTo(startX, startY);
-    context.lineTo(endX, endY);
-    context.strokeStyle = "blue";  // Blue for visibility testing
-    context.stroke();
-    context.closePath();
-  };
+  console.log("Drawing with:", color, size);
+
+  const context = contextRef.current;
+
+  if (!context) {
+    pendingStrokesRef.current.push({
+      startX,
+      startY,
+      endX,
+      endY,
+      color,
+      size,
+    });
+    return;
+  }
+
+  context.beginPath();
+  context.moveTo(startX, startY);
+  context.lineTo(endX, endY);
+
+  context.strokeStyle = color;
+  context.lineWidth = size;
+  context.lineCap = "round";
+
+  context.stroke();
+  context.closePath();
+};
 
   const handleCodeChange = (value) => {
     const nextCode = value ?? "";
@@ -214,65 +277,100 @@ function Room() {
       });
     }
   };
+  const handleRun = () => {
+      setOutput("Running...\n\nFeature coming in Phase 16.");
+    };
 
   const handlePointerUp = () => {
     isDrawingRef.current = false;
   };
 
-  useEffect(() => {
-    const setupListeners = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) {
-        console.log("Canvas not available for listeners, retrying");
-        requestAnimationFrame(setupListeners);
-        return;
-      }
+ useEffect(() => {
+  const canvas = canvasRef.current;
+  if (!canvas) return;
 
-      const onPointerDown = (event) => {
-        lastPositionRef.current = getCanvasCoordinates(event);
-        isDrawingRef.current = true;
-      };
+  const onPointerDown = (event) => {
+    lastPositionRef.current = getCanvasCoordinates(event);
+    isDrawingRef.current = true;
+  };
 
-      const onPointerMove = (event) => {
-        if (!isDrawingRef.current) return;
+  const onPointerMove = (event) => {
+    if (!isDrawingRef.current) return;
 
-        const nextPosition = getCanvasCoordinates(event);
-        const previousPosition = lastPositionRef.current;
+    const nextPosition = getCanvasCoordinates(event);
+    const previousPosition = lastPositionRef.current;
 
-        drawStroke({
-          startX: previousPosition.x,
-          startY: previousPosition.y,
-          endX: nextPosition.x,
-          endY: nextPosition.y,
-        });
+    drawStroke({
+      startX: previousPosition.x,
+      startY: previousPosition.y,
+      endX: nextPosition.x,
+      endY: nextPosition.y,
+      color: brushColor,
+      size: brushSize,
+    });
 
-        if (socketRef.current?.connected) {
-          socketRef.current.emit("whiteboard-draw", {
-            roomId,
-            stroke: {
-              startX: previousPosition.x,
-              startY: previousPosition.y,
-              endX: nextPosition.x,
-              endY: nextPosition.y,
-            },
-          });
-        }
+    if (socketRef.current?.connected) {
+      socketRef.current.emit("draw-stroke", {
+        roomId,
+        startX: previousPosition.x,
+        startY: previousPosition.y,
+        endX: nextPosition.x,
+        endY: nextPosition.y,
+        color: brushColor,
+        size: brushSize,
+      });
+    }
 
-        lastPositionRef.current = nextPosition;
-      };
+    lastPositionRef.current = nextPosition;
+  };
 
-      const onPointerUp = () => {
-        isDrawingRef.current = false;
-      };
+  const onPointerUp = () => {
+    isDrawingRef.current = false;
+  };
 
-      canvas.addEventListener("pointerdown", onPointerDown);
-      canvas.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
-    };
+  canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerup", onPointerUp);
 
-    requestAnimationFrame(setupListeners);
-  }, []);
+  return () => {
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    canvas.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+  };
+}, [brushColor, brushSize, roomId]);
+  const handleCopyRoomId = () => {
+  navigator.clipboard.writeText(roomId);
+  };
+  const handleLeaveRoom = () => {
+  socketRef.current?.disconnect();
+  window.location.href = "/";
+  };
+  const formatTime = (seconds) => {
+      const hrs = Math.floor(seconds / 3600)
+        .toString()
+        .padStart(2, "0");
 
+      const mins = Math.floor((seconds % 3600) / 60)
+        .toString()
+        .padStart(2, "0");
+
+      const secs = (seconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+      return `${hrs}:${mins}:${secs}`;
+  };
+  const handleStartTimer = () => {
+  setTimerRunning(true);
+  };
+
+  const handlePauseTimer = () => {
+    setTimerRunning(false);
+  };
+
+  const handleResetTimer = () => {
+    setElapsedTime(0);
+  };
   if (isLoading) {
     return (
       <main className="page">
@@ -288,69 +386,101 @@ function Room() {
       </main>
     );
   }
+  const handleClearWhiteboard = () => {
+  const canvas = canvasRef.current;
+  const context = contextRef.current;
+
+  if (!canvas || !context) return;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  context.fillStyle = "white";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+};
+
+const handleSaveWhiteboard = () => {
+  const canvas = canvasRef.current;
+
+  if (!canvas) return;
+
+  const link = document.createElement("a");
+
+  link.download = "whiteboard.png";
+  link.href = canvas.toDataURL();
+
+  link.click();
+};
 
   return (
-    <main className="page">
-      <section className="room-header">
-        <h1>Room: {room.roomId}</h1>
-        <p>Welcome, {username}</p>
-        <p>Users: {users.length}</p>
-      </section>
+    <div className={darkMode ? "dark-theme" : "light-theme"}>
+    
+     <Navbar
+       roomId={roomId}
+       userCount={users.length}
+       timer={formatTime(elapsedTime)}
+       timerRunning={timerRunning}
+       onStartTimer={handleStartTimer}
+       onPauseTimer={handlePauseTimer}
+       onResetTimer={handleResetTimer}
+       onCopyRoomId={handleCopyRoomId}
+       onLeaveRoom={handleLeaveRoom}
+       themeToggle={
+        <ThemeToggle
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
+  }
+      />
+      <main className="page">
+    
+      <RoomLayout
+        usersPanel={
+        <UsersPanel users={users} />
+      }
+      editorPanel={
+  <div className="editor-section">
 
-      <section className="placeholder-panel">
-        <h2>Active Users</h2>
-        <ul>
-          {users.map((u) => (
-            <li key={u.socketId}>{u.username}</li>
-          ))}
-        </ul>
-      </section>
+    <LanguageSelector
+      language={language}
+      setLanguage={setLanguage}
+    />
 
-      <section className="placeholder-panel">
-        <h2>Editor Area</h2>
-        <div className="editor-whiteboard">
-          <div className="editor-container">
-            <Editor
-              height="400px"
-              defaultLanguage="javascript"
-              // theme="vs-dark"
-              value={code}
-              onChange={handleCodeChange} // update the code state and emit a code-change event to the server when the user types in the editor
-              options={{ minimap: { enabled: false } }}
-              onMount={(editor, monaco) => {
-                editorRef.current = editor; // store the editor instance in a ref for later use (e.g., to get the current code value)
-                monacoRef.current = monaco;
+    <RunButton handleRun={handleRun} />
 
-                editor.onDidChangeCursorPosition((e) => {
-                  // Handle cursor position changes if needed
-                  if (!socketRef.current?.connected) return;
+    <EditorPanel
+      code={code}
+      handleCodeChange={handleCodeChange}
+      editorRef={editorRef}
+      monacoRef={monacoRef}
+      socketRef={socketRef}
+      roomId={roomId}
+      username={username}
+      darkMode={darkMode}
+      language={language}
+    />
 
-                  socketRef.current.emit("cursor-move", {
-                    roomId,
-                    userId: socketRef.current.id,
-                    username,
-                    position: e.position, // send the cursor position to the server when it changes
-                  });
-                });
-              }}
-            />
-          </div>
-
-          <canvas
-            ref={canvasRef}
-            width={400}
-            height={400}
-            className="whiteboard"
-          />
-        </div>
-      </section>
-
-      <section className="placeholder-panel">
-        <h2>Output Area</h2>
-        <p>coming soon</p>
-      </section>
-    </main>
-  );
+  </div>
 }
-
+      problemPanel={<ProblemPanel />}
+      whiteboardPanel={
+  <WhiteboardPanel
+  canvasRef={canvasRef}
+  width={1000}
+  height={300}
+  onClear={handleClearWhiteboard}
+  onSave={handleSaveWhiteboard}
+  brushColor={brushColor}
+  setBrushColor={setBrushColor}
+  brushSize={brushSize}
+  setBrushSize={setBrushSize}
+/>
+}
+      outputPanel={
+        <OutputPanel output={output}/>
+      }
+    />
+    </main>
+</div>
+);
+}
 export default Room;

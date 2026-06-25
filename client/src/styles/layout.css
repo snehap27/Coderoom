@@ -1,0 +1,265 @@
+.room-layout{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+    padding:20px;
+}
+
+/* Top 3-column layout */
+.top-layout{
+    display:grid;
+    grid-template-columns:180px 2fr 260px;
+    gap:25px;
+}
+
+/* Column heights */
+.users-column,
+.editor-column,
+.problem-column{
+    height:650px;
+    min-width:0;
+}
+
+/* Editor column */
+.editor-column{
+    overflow:hidden;
+}
+
+/* Card styling */
+.users-panel,
+.problem-panel,
+.editor-section{
+    height:100%;
+}
+.editor-container,
+.output-panel,
+.whiteboard-row{
+    background:white;
+    border:1px solid #ddd;
+    border-radius:15px;
+}
+
+/* Padding */
+.users-panel,
+.problem-panel,
+.output-panel{
+    padding:20px;
+    box-sizing:border-box;
+}
+
+/* Editor */
+.editor-container{
+    flex:1;
+    width:100%;
+    border:1px solid #ddd;
+    border-radius:16px;
+    overflow:hidden;
+    box-sizing:border-box;
+}
+/* Users panel */
+.users-panel{
+    height:100%;
+    overflow-y:auto;
+}
+
+/* Problem panel */
+.problem-panel{
+    height:100%;
+    overflow-y:auto;
+}
+
+/* User list */
+.users-panel ul{
+    padding:0;
+}
+
+.users-panel li{
+    list-style:none;
+}
+
+/* User card */
+.user-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px;
+    border-radius:12px;
+    background:#f8fafc;
+    margin-bottom:12px;
+    font-size:17px;
+}
+
+/* Headings */
+.users-panel h2,
+.problem-panel h2{
+    margin-bottom:30px;
+}
+
+/* Whiteboard */
+.whiteboard-section{
+    width:100%;
+}
+
+.whiteboard-toggle{
+    width:100%;
+    text-align:left;
+    padding:18px 20px;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:15px;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.whiteboard-row{
+    margin-top:10px;
+    padding:20px;
+}
+
+.whiteboard{
+    width:100%;
+    background:white;
+    border-radius:15px;
+}
+
+/* Output */
+.output-row{
+    width:100%;
+}
+
+.output-panel{
+    min-height:150px;
+}
+
+/* Responsive */
+@media (max-width:1000px){
+
+    .top-layout{
+        grid-template-columns:1fr;
+    }
+
+    .users-column,
+    .editor-column,
+    .problem-column{
+        height:auto;
+    }
+}
+.output-box{
+    background:#1e1e1e;
+    color:#ffffff;
+    padding:15px;
+    border-radius:10px;
+    min-height:80px;
+    overflow-x:auto;
+    font-family:monospace;
+}
+.run-button{
+    width:100%;
+    height:60px;
+    border:none;
+    border-radius:16px;
+    background:#22c55e;
+    color:white;
+    font-size:20px;
+    font-weight:600;
+    cursor:pointer;
+}
+.run-button:hover{
+    background:#16a34a;
+}
+.editor-section{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    height:100%;
+}
+
+.editor-container{
+    flex:1;
+    width:100%;
+    border:1px solid #ddd;
+    border-radius:16px;
+    overflow:hidden;
+    box-sizing:border-box;
+}
+.problem-panel pre{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:10px;
+    overflow-x:auto;
+}
+
+.dark-theme .problem-panel pre{
+    background:#374151;
+}
+.problem-panel{
+    overflow-y:auto;
+}
+.test-case{
+    margin-top:20px;
+}
+
+.test-case pre{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:10px;
+    overflow-x:auto;
+    line-height:1.6;
+}
+
+.dark-theme .test-case pre{
+    background:#374151;
+}
+.whiteboard-toolbar{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.whiteboard-button{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    background:#3b82f6;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.whiteboard-button:hover{
+    background:#2563eb;
+}
+.color-toolbar{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.color-btn{
+    width:35px;
+    height:35px;
+    border:none;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.black{
+    background:black;
+}
+
+.red{
+    background:red;
+}
+
+.blue{
+    background:blue;
+}
+
+.green{
+    background:green;
+}
+
+.brush-toolbar{
+    margin-bottom:20px;
+}
