@@ -4,7 +4,7 @@ import HeroSection from "../components/Home/HeroSection";
 import LoginCard from "../components/Home/LoginCard";
 import PreviewPanel from "../components/Home/PreviewPanel";
 import AnimatedBackground from "../components/Home/AnimatedBackground";
-import "../styles/Home.css";
+import "../styles/home.css";
 
 function Home() {
   const [username, setUsername] = useState("");
@@ -23,7 +23,7 @@ function Home() {
     setError("");
     localStorage.setItem("coderoomUsername", trimmedUsername);
 
-    fetch("http://localhost:3000/room", {
+    fetch("https://coderoom-fi7c.onrender.com/room", {
       method: "POST",
     })
       .then((res) => res.json())
