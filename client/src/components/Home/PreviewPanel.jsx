@@ -1,36 +1,46 @@
 function PreviewPanel() {
-  return (
-    <div className="preview-card">
 
-      <h2>Workspace Status</h2>
+    const features=[
+        "Code Editor",
+        "Whiteboard",
+        "Interview Timer",
+        "Cursor Tracking",
+        "Multi-user Room"
+    ];
 
-      <div className="status-card">
-        <span className="status-dot"></span>
-        Code Editor Connected
-      </div>
+    return(
 
-      <div className="status-card">
-        <span className="status-dot"></span>
-        Whiteboard Ready
-      </div>
+        <div className="preview-card">
 
-      <div className="status-card">
-        <span className="status-dot"></span>
-        Interview Timer Available
-      </div>
+            <h2>Workspace Status</h2>
 
-      <div className="status-card">
-        <span className="status-dot"></span>
-        Cursor Tracking Active
-      </div>
+            {
 
-      <div className="status-card">
-        <span className="status-dot"></span>
-        Multi-user Rooms
-      </div>
+                features.map((feature,index)=>(
 
-    </div>
-  );
+                    <div
+                        key={index}
+                        className="status-card"
+                    >
+
+                        <span className="status-dot"></span>
+
+                        <span>{feature}</span>
+
+                        <span className="status-online">
+                            Online
+                        </span>
+
+                    </div>
+
+                ))
+
+            }
+
+        </div>
+
+    );
+
 }
 
 export default PreviewPanel;
