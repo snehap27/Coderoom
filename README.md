@@ -182,12 +182,10 @@ Events synchronized across connected clients include:
 - GitHub: https://github.com/Akanksha-Singh27
 - LinkedIn: https://www.linkedin.com/in/akanksha-singh-858020327/
 
-## Ananya Satyapal
-- GitHub: https://github.com/...
-- LinkedIn: https://linkedin.com/in/...
-
 ## Sneha Pandey
 - GitHub: https://github.com/snehap27
 - LinkedIn: https://linkedin.com/in/snehapandey27/
 
-  E96MCD 
+## Ananya Satyapal
+- GitHub: https://github.com/...
+- LinkedIn: https://linkedin.com/in/...
